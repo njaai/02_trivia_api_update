@@ -61,7 +61,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Not Found')
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/200')
+        res = self.client().delete('/questions/search/200')
         data = json.loads(res.data)
 
         question = Question.query.filter(Question.id == 200).one_or_none()

@@ -9,6 +9,8 @@ import random
 
 from models import setup_db, Question, Category
 
+
+
 QUESTIONS_PER_PAGE = 10
 
 def paginate_questions(request, selection):
@@ -76,11 +78,7 @@ def create_app(test_config=None):
   '''
   @app.route('/questions')
   def questions():
-    # page = request.args.get('page', 1 , type=int)
-    # start = (page - 1) * 10
-    # end = start + 10
-    # questions = Question.query.all()
-    # formatted_questions = [Question.format() for Question in questions]
+   
     selection = Question.query.order_by(Question.id).all()
     current_question = paginate_questions(request, selection)
 
@@ -90,7 +88,7 @@ def create_app(test_config=None):
     formatted_categories= {Category.id:Category.type for Category in categories}
     for category in categories:
       current_category = category.type
-    # current_category = Category.query.order_by(Category.type)
+ 
    
    
 
@@ -191,7 +189,7 @@ def create_app(test_config=None):
       selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(searchTerm)))
       current_question = paginate_questions(request, selection)
 
-      # res = request.get(request)
+
 
       # selection = Question.query.order_by(Question.id).all()
       
@@ -270,17 +268,16 @@ def create_app(test_config=None):
       previous_questions = body.get('previous_questions', None)
       category = body.get('quiz_category', None)
 
-      if not ('previous_questions' in body and 'quiz_category' in body):
-        abort(422)
-      # category_id = category['id']
+  
 
       if int(category['id']) == 0:
          new_quiz = Question.query.filter(Question.id.notin_(previous_questions)).all()
-       
-      
+
+
       else:
         new_quiz = Question.query.filter(Question.id.notin_(previous_questions), Question.category == str(category['id'])).all()
-       
+
+        
 
       if not new_quiz:
         new_quiz = None
@@ -288,19 +285,9 @@ def create_app(test_config=None):
 
       else:
         new_quiz = random.choice(new_quiz)
+        
+        question = new_quiz.format()
 
-      question = new_quiz.format()
-
-
-
-      # if int(category['id']) == 0:
-      #     new_quiz = Question.query.filter(Question.id.not_in_(previous_questions)).all()
-      # else:
-      #     new_quiz = Question.query.filter(Question.id.not_in_(previous_questions), Question.category == str(category['id'])).all()
-
-      # current_quiz_question = None
-      # if(new_quiz):
-      #     current_quiz_question = random.choice(new_quiz)
 
       return jsonify({
         'success': True,
